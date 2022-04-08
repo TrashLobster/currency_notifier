@@ -22,21 +22,24 @@ cur = connection.cursor()
 # TODO: time it so this code below runs, once every day at a specific time
 for i in range(0, 10):
     date_checked = date.isoformat(datetime.today() - timedelta(days=i))
-    print(date_checked)
     date_in_datebase = cur.execute('SELECT EXISTS (SELECT date FROM exchange_rate WHERE date=:date)', {"date": date_checked}).fetchone()[0]
     match date_in_datebase:
         case 0:  # where the date is not found in record
             response = currency_conversion_historic(api_key, BASE_CURRENCY, CURRENCY_CONVERT_TO, date=date_checked)
-            print(response)
             params = (response["updated_date"], BASE_CURRENCY, CURRENCY_CONVERT_TO, response["rates"][CURRENCY_CONVERT_TO]["rate"])
-            print(params)
             cur.execute(f"INSERT INTO exchange_rate VALUES (?, ?, ?, ?)", params)
             connection.commit()
         case 1:
             pass
 
-# print(cur.execute('SELECT * FROM exchange_rate').fetchall())
+mean = cur.execute('SELECT AVG(rate) FROM exchange_rate').fetchone()[0]
+upper = cur.execute('SELECT rate FROM exchange_rate ORDER BY rate DESC LIMIT 1').fetchone()[0]
+lower = cur.execute('SELECT rate FROM exchange_rate ORDER BY rate ASC LIMIT 1').fetchone()[0]
+print(mean, upper, lower)
 
+for row in cur.execute('SELECT * FROM exchange_rate ORDER BY date'):
+    if row[3] > mean:
+        print(row[0], row[3])
 # TODO: Data analysis, find max, min, mean, upper quartile, lower quartile
 # TODO: connect to email - if the exchange rate is higher than upper quartile, send an email to main email
 
