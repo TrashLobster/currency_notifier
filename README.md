@@ -11,7 +11,8 @@ Dependencies:
   - dotenv - to store API-keys and email logins
 
 Sample email:
-Exchange rate from NZD to JPY is at 85.0587!
+
+Subject: Exchange rate from NZD to JPY is at 85.0587!
 
 The top ten historic rates from the past 100 days (not including today) are:
 
