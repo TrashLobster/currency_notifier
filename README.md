@@ -2,7 +2,7 @@
 
 **DISCLAIMER:**
 
-This project was designed primarily for study and for personal use.
+This project was designed solely for study and for personal use only.
 
 **NOTE:** the automated email sending will no longer be usable after 30 May 2022 as Google will be removing the less secured login in option then
 
