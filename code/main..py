@@ -25,8 +25,8 @@ date_in_datebase = cur.execute('SELECT EXISTS (SELECT date FROM exchange_rate WH
 match date_in_datebase:
     case 0:  # where the date is not found in record
         response = converter.currency_conversion()
-        params = (response["updated_date"], converter.base_currency, converter.currency_convert_to,
-                  response["rates"][converter.currency_convert_to]["rate"])
+        params = (response["updated_date"], converter.base_currency, converter.currency_to_convert_to,
+                  response["rates"][converter.currency_to_convert_to]["rate"])
         cur.execute(f"INSERT INTO exchange_rate VALUES (?, ?, ?, ?)", params)
         connection.commit()
     case 1:
@@ -37,7 +37,7 @@ mean = cur.execute('SELECT AVG(rate) FROM exchange_rate').fetchone()[0]
 upper = cur.execute(
     'SELECT date, rate FROM exchange_rate ORDER BY rate DESC LIMIT 1').fetchone()
 top_ten = cur.execute('SELECT date, rate FROM exchange_rate WHERE date != :today ORDER BY rate DESC LIMIT 10', {
-                       'today': today}).fetchall()
+    'today': today}).fetchall()
 tenth_rate = top_ten[9]
 total_days = cur.execute('SELECT COUNT(date) FROM exchange_rate').fetchone()[0]
 lower = cur.execute(
