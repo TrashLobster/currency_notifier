@@ -18,13 +18,13 @@ def generate_db():
     # if the date is already recorded in the database, then don't rewrite it again - runs once a day at 12 pm and record that amount
     # TODO: time it so this code below runs, once every day at a specific time
     try:
-        for i in range(0, 100):
+        for i in range(100, 170):
             date_checked = date.isoformat(datetime.today() - timedelta(days=i))
             date_in_datebase = cur.execute('SELECT EXISTS (SELECT date FROM exchange_rate WHERE date=:date)', {"date": date_checked}).fetchone()[0]
             match date_in_datebase:
                 case 0:  # where the date is not found in record
                     response = converter.currency_conversion_historic(date=date_checked)
-                    params = (response["updated_date"], converter.base_currency, converter.currency_convert_to, response["rates"][converter.currency_convert_to]["rate"])
+                    params = (response["updated_date"], converter.base_currency, converter.currency_to_convert_to, response["rates"][converter.currency_to_convert_to]["rate"])
                     cur.execute(f"INSERT INTO exchange_rate VALUES (?, ?, ?, ?)", params)
                     connection.commit()
                 case 1:
